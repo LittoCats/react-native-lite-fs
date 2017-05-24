@@ -1,0 +1,26 @@
+{
+  "name": "react-native-lite-fs",
+  "version": "0.0.1",
+  "description": "lightweight file system interface for react-native.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "buffer": "latest"
+  },
+  "keywords": [
+    "react-native",
+    "fs"
+  ],
+  "author": "程巍巍",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/LittoCats/react-native-lite-fs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LittoCats/react-native-lite-fs/issues"
+  },
+  "homepage": "https://github.com/LittoCats/react-native-lite-fs#readme"
+}
