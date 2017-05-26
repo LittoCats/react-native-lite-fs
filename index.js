@@ -72,9 +72,10 @@ const fs = module.exports = exports = {
     return normalize(Native.exists(p).then(function(stat) {
       if (stat === 2) throw new Error('regular file already exists.');
       if (stat === 1) return 1;
-      return fs.mkdir(path.dirname(p), auto)
-    }).then(function(stat) {
-      return stat ? stat : Native.mkdir(p);
+      return fs.mkdir(path.dirname(p), auto).then(function (stat) {
+        if (!stat) throw new Error('mkdir error.');
+        return Native.mkdir(p);
+      });
     }), callback);
   },
 
@@ -84,11 +85,15 @@ const fs = module.exports = exports = {
       callback = auto;
       auto = false;
     }
-
+    const dirname = path.dirname(p);
     return normalize(Native.exists(p).then(function (stat) {
       if (stat !== 0) throw new Error('file already exists.');
-      return fs.mkdir(path.dirname(p));
-    }).then(function() {
+      return Native.exists(dirname)
+    }).then(function(stat){
+      if (stat === 2) throw new Error(`${dirname} is not a directory.`);
+      if (stat === 0 && !auto) throw new Error(`${dirname} dose not exists.`); 
+      if (stat === 0) return fs.mkdir(dirname, auto);
+    }).then(function(stat) {
       return Native.touch(p);
     }), callback);
   },
