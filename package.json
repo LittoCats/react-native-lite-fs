@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "buffer": "latest"
+    "buffer": "latest",
+    "react-native-path": "latest"
   },
   "keywords": [
     "react-native",

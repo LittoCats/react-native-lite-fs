@@ -5,7 +5,7 @@ import {
 import invariant from 'invariant';
 import {Buffer} from 'buffer';
 
-import path from 'react-native-lite-path';
+import path from 'react-native-path';
 import enqueue from 'react-native-lite-enqueue';
 
 type Callback = (error: Error, result: any)=> any;
