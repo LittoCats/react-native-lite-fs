@@ -34,6 +34,15 @@ RCT_EXPORT_MODULE(LiteFileSystem)
     NSMutableDictionary* constants = [NSMutableDictionary new];
     constants[@"HOME"] = NSHomeDirectory();
     constants[@"TEMP"] = NSTemporaryDirectory();
+    constants[@"UUID"] = ^{
+        NSString* service = [[[NSBundle mainBundle] bundleIdentifier] stringByAppendingString:@".UUID"];
+        NSString* uuid = CKPull(service);
+        if (!uuid) {
+            uuid = [NSUUID UUID].UUIDString;
+            CKPush(service, uuid);
+        }
+        return uuid;
+    }();
 
     return constants;
 }
@@ -203,4 +212,50 @@ EXPORT_METHOD(mkdir:(NSString*)src) {
     if (error) reject(@(error.code).description, error.domain, error);
     else resolve(@(status));
 }
+
+/******************************************************************************************************************************/
+
+static void CKPush(NSString* service, id data) {
+    NSMutableDictionary* query = CKQuery(service);
+    OSStatus status = SecItemDelete((__bridge CFDictionaryRef)query);
+    NSLog(@"CKPush 1: %i", status);
+    [query setObject:[NSKeyedArchiver archivedDataWithRootObject:data] forKey:kSecValueData];
+    status = SecItemAdd((__bridge CFDictionaryRef)query, NULL);
+    NSLog(@"CKPush 2: %i", status);
+}
+
+static id CKPull(NSString* service) {
+    id data = nil;
+    NSMutableDictionary* query = CKQuery(service);
+    [query setObject:(id)kCFBooleanTrue forKey:(__bridge_transfer id)kSecReturnData];
+    [query setObject:(__bridge_transfer id)kSecMatchLimitOne forKey:(__bridge_transfer id)kSecMatchLimit];
+    CFDataRef keyData = NULL;
+    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, (CFTypeRef *)&keyData);
+    if (status == noErr) {
+        @try {
+            data = [NSKeyedUnarchiver unarchiveObjectWithData:(__bridge_transfer NSData *)keyData];
+        } @catch (NSException *e) {
+            NSLog(@"Unarchive of %@ failed: %@", service, e);
+        } @finally {
+        }
+    }
+
+    return data;
+}
+
+static void CKDelete(NSString* service) {
+    NSMutableDictionary* query = CKQuery(service);
+}
+
+static NSMutableDictionary* CKQuery(NSString* service) {
+    return [NSMutableDictionary dictionaryWithObjectsAndKeys:
+            (__bridge_transfer id)kSecClassGenericPassword,(__bridge_transfer id)kSecClass,
+            service, (__bridge_transfer id)kSecAttrService,
+            service, (__bridge_transfer id)kSecAttrAccount,
+            (__bridge_transfer id)kSecAttrAccessibleAfterFirstUnlock,(__bridge_transfer id)kSecAttrAccessible,
+            nil];
+}
+
+/******************************************************************************************************************************/
+
 @end

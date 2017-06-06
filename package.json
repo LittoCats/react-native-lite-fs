@@ -1,6 +1,6 @@
 {
   "name": "react-native-lite-fs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "lightweight file system interface for react-native.",
   "main": "index.js",
   "scripts": {
