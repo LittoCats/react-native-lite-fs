@@ -35,7 +35,7 @@ const Native = NativeModules.LiteFileSystem;
 
 /******************************************************************************/
 
-const {HOME, TEMP, UUID} = Native;
+const {HOME, TEMP, UUID, MODEL} = Native;
 const MAX_BUFFER_LENGTH = Math.pow(2, 20); // 1M
 const DEFAULT_BUFFER_LENGTH = Math.pow(2, 10) * 4; // 4K
 
@@ -43,6 +43,7 @@ const fs = module.exports = exports = {
   get HOME(){ return HOME; },
   get TEMP(){ return TEMP; },
   get UUID(){ return UUID; },
+  get MODEL(){ return MODEL; },
 
 
   /**

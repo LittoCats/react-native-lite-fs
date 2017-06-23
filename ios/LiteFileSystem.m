@@ -7,6 +7,7 @@
 //
 
 #import "LiteFileSystem.h"
+#import <UIKit/UIKit.h>
 
 @implementation LiteFileSystem {
     __strong NSMutableArray* _fds;
@@ -43,6 +44,8 @@ RCT_EXPORT_MODULE(LiteFileSystem)
         }
         return uuid;
     }();
+
+    constants[@"MODEL"] = [UIDevice currentDevice].model || @"unknown";
 
     return constants;
 }
