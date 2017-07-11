@@ -1,5 +1,12 @@
 package com.littocats.filesystem;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.telephony.TelephonyManager;
+import android.util.Log;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -16,9 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -57,6 +62,8 @@ public class FSModule extends ReactContextBaseJavaModule {
         Map<String, Object> consts = new HashMap<>();
         consts.put("HOME", getReactApplicationContext().getExternalFilesDir(null).getAbsolutePath());
         consts.put("TEMP", getReactApplicationContext().getExternalCacheDir().getAbsolutePath());
+        consts.put("UUID", UDID.getUDID(getReactApplicationContext()));
+        consts.put("MODEL", Build.MODEL);
         return consts;
     }
 
@@ -285,5 +292,9 @@ public class FSModule extends ReactContextBaseJavaModule {
                 remove(f);
             }
         }
+    }
+
+    private String getUUID() {
+        return "";
     }
 }
